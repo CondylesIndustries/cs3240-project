@@ -1,0 +1,221 @@
+{% load static %}
+{% load django_bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!-- Bootstrap CSS -->
+{% bootstrap_css %}
+
+<!-- Bootstrap Icons CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
+<style>
+    .header {
+      margin-bottom: 100px; /* Add margin at the bottom of the header */
+    }
+
+    html, body{
+    height: 100%; /* Make sure html and body are at least the height of the viewport */
+    margin: 0; /* Reset default margin */
+    padding: 0; /* Reset default padding */
+    display: flex;
+    flex-direction: column; /* Organize children in a column */
+    }
+
+    .content {
+    flex-grow: 1;
+    }
+
+    .form-container {
+      max-width: 600px; /* Set the maximum width of the container */
+      margin: 0 auto; /* Center the container horizontally */
+    }
+
+    .btn-primary{
+      background:#E57200;
+      border: none;
+  }
+
+    .footer {
+      margin-top: 50px; /* Add margin at the top of the footer */
+      margin-bottom: 0px;
+      padding-top: 10px;
+      padding-bottom: 30px;
+     }
+</style>
+
+<title>Facilities Management</title>
+<link rel="icon" type="{{ sabrepic.content_type }}" href="data:{{ sabrepic.content_type }};base64,{{ sabrepic.content }}">
+
+<header class="header" style="background-color: #232D4B; color: white">
+    <div class="container">
+        <div class ="row">
+            <div class ="col">
+                <img src="data:{{ header_image.content_type }};base64,{{ header_image.content }}" class="img-fluid" alt="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-6 text-center">
+                <a href="{% url 'home' %}" style="text-decoration: none; color: inherit">
+                    <p style="font-size: xx-large; font-weight: bold; cursor: pointer;">Facilities Management</p>
+                </a>
+            </div>
+            <div class="col-2">
+                {% if user.is_authenticated %}
+                    <a class="btn" style="color: white;text-decoration: underline; font-size: large; vertical-align: text-bottom" data-bs-toggle="modal" data-bs-target="#userInfoModal">{{user.first_name}} {{user.last_name}}</a>
+                {% endif %}
+            </div>
+            <div class="col-1 text-end">
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn btn-light"  data-bs-toggle="modal" data-bs-target="#logOutModal" style="width: 80px ; height: 50px; align-content: center; color: #232D4B">Logout</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logOutLabel">Logging Out</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>You are about to log out, do you wish to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" style="background: white; color: black; border: none" data-bs-dismiss="modal">Close</button>
+        <a type="button" style="background:#E57200; border: none" class="btn btn-primary" href="logout">Log Out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UserInfo Modal -->
+<div class="modal fade" id="userInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userInfoModalLabel">User Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>Name: {{user.first_name}} {{user.last_name}}</p>
+          <p>Email: {{user.email}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" style="background: #E57200; border: none" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% block content %}
+<div class="container form-container">
+    <form id="reportForm" method="post" action="{% url 'reportu' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row" style="margin-left: 20px; margin-right: 20px">
+            <div class="col-3" style="align-content: center; align-items: center">
+                <a href="/" class="btn btn-primary"  style="align-content: center; color: white;scale: 120%">
+                    <i class="bi bi-arrow-left-square-fill" href="/"> Home </i>
+                </a>
+            </div>
+            <div class="col-6">
+                <p style="text-align: center;font-size: xx-large; font-weight: bold; cursor: pointer;">User Reporting</p>
+            </div>
+            <div class="col-3"></div>
+        </div>
+        <div class="row mt-3">
+            <label for="userReporting">Username:</label>
+            {% if anonymousUser %}
+                <input type="text" id="userReporting" name="userReporting" value="Anonymous" readonly>
+            {% else %}
+                <input type="text" id="userReporting" name="userReporting" value="{{ user.username }}" readonly>
+            {% endif %}
+        </div>
+        <div class="row mt-3">
+            <label for="report_type">Report Type:</label>
+            <select id="report_type" name="report_type">
+                {% for choice in REPORT_TYPE_CHOICES %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select><br><br>
+        </div>
+
+        <div class="row mt-3">
+            <label for="building">Building:</label>
+            <select id="building" name="building">
+                {% for choice in BUILDING_CHOICES %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select><br><br>
+        </div>
+
+        <div class="row mt-3">
+            <label for="area">Area (200 characters max):</label>
+            <textarea id="area" name="area" maxlength="200" required></textarea>
+        </div>
+
+        <div class="row mt-3">
+            <label for="description">Description (200 characters max):</label>
+            <textarea id="description" name="description" maxlength="200" required></textarea>
+        </div>
+        <div class="row mt-3">
+            <label for="file">(Optional) Upload File - pdf, jpg, jpeg, text supported:</label>
+            <input type="file" id="file" name="file">
+            <div id="fileError" style="display: none; color: red;">Invalid file type. Please upload a jpg, jpeg, pdf, or txt file.</div>
+        </div>
+
+
+        <div class="row mt-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var reportForm = document.getElementById('reportForm');
+        var fileInput = document.getElementById('file');
+        var fileError = document.getElementById('fileError');
+
+        reportForm.addEventListener('submit', function(event) {
+            if(fileInput.files.length > 0) {
+                var allowedTypes = ['jpg', 'jpeg', 'pdf', 'txt'];
+                var fileName = fileInput.value;
+                var fileType = fileName.split('.').pop().toLowerCase();
+
+                if (allowedTypes.indexOf(fileType) === -1) {
+                event.preventDefault(); // Prevent form submission
+                fileError.style.display = 'block'; // Show error message
+                }
+            }
+        });
+
+        fileInput.addEventListener('change', function() {
+            fileError.style.display = 'none'; // Hide error message on file change
+        });
+    });
+</script>
+{% endblock %}
+
+
+<footer class="footer" style="background-color: #232D4B;">
+    <div class="container text-center text-white">
+        <p>&copy; 2024 Team A-30 | Advanced Software Development. All rights reserved.</p>
+        <p>All information is used for educational purposes for our class project. This is not affiliated with UVA Facilities Management. No reports submitted are actually functional.</p>
+        <p>This system is not monitored. Do not submit any real information.</p>
+        <a href="https://www.fm.virginia.edu/">Click here to go to UVA's real Facilities Management website</a>
+    </div>
+</footer>

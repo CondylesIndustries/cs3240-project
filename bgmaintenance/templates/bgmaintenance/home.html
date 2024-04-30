@@ -1,0 +1,222 @@
+{% load static %}
+{% load django_bootstrap5 %}
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% load socialaccount %}
+
+<!-- Bootstrap CSS -->
+{% bootstrap_css %}
+
+<!-- Bootstrap Icons CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
+<style>
+  html, body{
+    height: 100%; /* Make sure html and body are at least the height of the viewport */
+    margin: 0; /* Reset default margin */
+    padding: 0; /* Reset default padding */
+    display: flex;
+    flex-direction: column; /* Organize children in a column */
+  }
+
+  .content {
+    flex-grow: 1;
+    margin: 0 auto;
+
+  }
+  .row-md-4{
+    background: #232D4B;
+    color: white;
+    width: 100%; /* Set width to 100% to make it go across the entire page */
+    padding: 20px; /* Adjust padding as needed */
+    text-align: center;
+  }
+
+  .btn-secondary {
+	width: 100px;
+	height: 50px;
+	transform: skew(20deg);
+	background: #555;
+  }
+
+  .btn-secondary span {
+        transform: skew(-20deg);
+        display: block;
+  }
+
+  .footer {
+    margin-top: 0px; /* Add margin at the top of the footer */
+    margin-bottom: 0px;
+    padding: 20px;
+  }
+</style>
+
+<title>Facilities Management</title>
+<!--<link rel="icon" type="image/png" href="data:image/png;base64,{{ sabrepic }}">-->
+<link rel="icon" type="{{ sabrepic.content_type }}" href="data:{{ sabrepic.content_type }};base64,{{ sabrepic.content }}">
+
+
+<header class="header" style="background-color: #232D4B; color: white">
+    <div class="container">
+        <div class ="row">
+            <div class ="col">
+                <img src="data:{{ header_image.content_type }};base64,{{ header_image.content }}" class="img-fluid" alt="">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-6 text-center">
+                <p style="font-size: xx-large; font-weight: bold">Facilities Management</p>
+            </div>
+            <div class="col-2">
+                {% if user.is_authenticated %}
+                    <a class="btn" style="color: white;text-decoration: underline; font-size: large; vertical-align: text-bottom" data-bs-toggle="modal" data-bs-target="#userInfoModal">{{user.first_name}} {{user.last_name}}</a>
+                {% endif %}
+            </div>
+            <div class="col-1 text-end">
+                {% if user.is_authenticated %}
+                    <a href="logout" class="btn btn-light"  data-bs-toggle="modal" data-bs-target="#logOutModal" style="width: 80px ; height: 50px; align-content: center; color: #232D4B">Logout</a>
+                {% else %}
+                    <a href="https://accounts.google.com/o/oauth2/v2/auth?scope=email%20profile&amp;response_type=code&amp;redirect_uri={{domain}}/accounts/google/login/callback/&amp;client_id=251991578412-s87j9geg1f3jn9nqjvjgn4f1rs9qd2hb.apps.googleusercontent.com" class="btn btn-light" style="align-content: center; color: #232D4B">
+                        <i class="bi bi-google" style="font-family: Arial"> Login </i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logOutLabel">Logging Out</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>You are about to log out, do you wish to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" style="background: white; color: black; border: none" data-bs-dismiss="modal">Close</button>
+        <a type="button" style="background:#E57200; border: none" class="btn btn-primary" href="logout">Log Out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UserInfo Modal -->
+<div class="modal fade" id="userInfoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userInfoModalLabel">User Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>Name: {{user.first_name}} {{user.last_name}}</p>
+          <p>Email: {{user.email}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" style="background: #E57200; border: none" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<style>
+    /* Define the dimensions for the carousel container */
+    #carouselExampleIndicators {
+      height: 350px; /* Adjust the height as needed */
+      width: auto; /* Adjust the width as needed */
+      overflow: hidden; /* Crop the images outside of the container */
+      margin: 0;
+      z-index: 0;
+      position: absolute;
+    }
+    /* Set fixed dimensions for the images */
+    .carousel-item img {
+      height: 350px; /* Adjust the height as needed */
+      width: auto; /* Adjust the width as needed */
+      float: left;
+      margin: 0;
+    }
+    .overlay{
+      height: 350px; /* Adjust the height as needed */
+      width: auto; /* Adjust the width as needed */
+      margin-left: auto;
+      margin-right: 0;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row" style="background: #F9DCBF">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="z-index: 0; float: left">
+                <div class="carousel-inner" style="float: left">
+                    <div class="carousel-item active" style="float: left">
+                        <img src="data:{{ rotundapic.content_type }};base64,{{ rotundapic.content }}" class="img" alt="...">
+                    </div>
+                    <div class="carousel-item" style="float: left">
+                        <img src="data:{{ alderman.content_type }};base64,{{ alderman.content }}" class="img" alt="...">
+                    </div>
+                    <div class="carousel-item" style="float: left">
+                        <img src="data:{{ jackpic.content_type }};base64,{{ jackpic.content }}" class="img" alt="...">
+                    </div>
+                </div>
+            </div>
+            <div class="overlay" style="z-index: 1; float: right;">
+                <img class="img-fluid" style="float: right" src="data:{{ overlaypic.content_type }};base64,{{ overlaypic.content }}" alt="...">
+            </div>
+    </div>
+</div>
+
+
+<div class="row-md-4" style="z-index: 1">
+    <p style="font-size: xx-large; font-weight: bold">Here to serve you!</p>
+</div>
+
+
+
+    {% block content %}
+    <div class="content">
+        <div class="container">
+            <div class="row py-3" style="text-align: center">
+                {% if user.is_authenticated %}
+                        <div class="col">
+                            <a href="{% url 'report_list' %}" class="btn btn-secondary text-center" style="background: #E57200 ;border: #E57200;text-align: center;align-content: center; width: 300px; height: 100px">
+                                <span>Your Reports</span>
+                            </a>
+                        </div>
+                        <div class="col">
+                            <a href="{% url 'reportu' %}" class="btn btn-secondary" style="background: #E57200 ;border: #E57200;text-align: center; align-content: center; width: 300px; height: 100px">
+                                <span>Submit a report as {{user.first_name}} {{user.last_name}}</span>
+                            </a>
+                        </div>
+                {% endif %}
+                    <div class="col">
+                        <a href="{% url 'reporta' %}" class="btn btn-secondary" style="background: #E57200 ;border: #E57200;text-align: center; align-content: center; width: 300px; height: 100px">
+                            <span>Anonymous Reporting</span>
+                        </a>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+    {% endblock %}
+
+
+<footer class="footer" style="background-color: #232D4B;">
+    <div class="container text-center text-white">
+        <p>&copy; 2024 Team A-30 | Advanced Software Development. All rights reserved.</p>
+        <p>All information is used for educational purposes for our class project. This is not affiliated with UVA Facilities Management. No reports submitted are actually functional.</p>
+        <p>This system is not monitored. Do not submit any real information.</p>
+        <a href="https://www.fm.virginia.edu/">Click here to go to UVA's real Facilities Management website</a>
+    </div>
+</footer>

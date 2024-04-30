@@ -1,0 +1,15 @@
+gunicorn
+django==5.*
+django-heroku
+dj-database-url
+django.core
+whitenoise
+django-allauth
+django-storages
+boto3
+django-environ
+selenium
+dj_database_url
+webdriver_manager
+django-bootstrap5
+pytz
